@@ -36,6 +36,15 @@ float CalcAlpha(float2 samplePosition, float2 size, float radius){
     return AntialiasedCutoff(distToRect);
 }
 
+float CalcAlphaEdgeOffset(float2 samplePosition, float2 size, float radius, float edgeOffset){
+    // -.5 = translate origin of samplePositions from (0, 0) to (.5, .5)
+    // because for Image component (0,0) is bottom-right, not a center
+    // * size = scale samplePositions to localSpace of Image with this size
+    float2 samplePositionTranslated = (samplePosition - .5) * size;
+    float distToRect = roundedRectangle(samplePositionTranslated, radius * .5 - edgeOffset, size * .5 - edgeOffset);
+    return AntialiasedCutoff(distToRect);
+}
+
 inline float2 translate(float2 samplePosition, float2 offset){
     return samplePosition - offset;
 }
